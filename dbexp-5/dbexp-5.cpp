@@ -14,7 +14,7 @@ typedef struct tree
 
 tree init_tree(tree tree0,string state, tree* left, tree* right, string content);
 tree better(string str);
-string find(string str);
+tree find(string str,tree tree0);
 tree trans_to_tree(string str);
 int out_by_tree(string str);
 string search(string s);
@@ -134,11 +134,38 @@ tree trans_to_tree(string str)
 	}
 	return result;
 }
-string find(string str)
+tree find(string str,tree tree0)
 {
-	return str;
+	while (tree0.state == str)
+		tree0 = *tree0.left;
+	return tree0;
 }
-int out_by_tree(string str)
+int out_by_tree(tree tree0)
 {
+	int i = 0;
+	int t = 0;
+	tree * tree1;
+	tree1 = &tree0;
+	tree **treelist = NULL;
+	while ((tree1 != NULL) || (treelist != NULL))
+	{
+		while (tree1 != NULL)
+		{
+			if (tree1->state != "")
+				cout << tree1->state << " " << endl;
+			if (tree1->content != "")
+				cout << tree1->content;
+			treelist[i] = tree1;
+			i += 0;
+			tree1 = tree1->left;
+		}
+		t = sizeof(tree1) / sizeof(tree);
+		if (t != 0)
+		{
+			treelist[t - 1] = NULL;
+			tree1 = treelist[t - 1];
+			tree1 = tree1->right;
+		}
+	}
 	return 0;
 }
