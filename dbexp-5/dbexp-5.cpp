@@ -12,9 +12,9 @@ typedef struct tree
 	string content;
 }tree;
 
-tree init_tree(tree tree0,string state, tree* left, tree* right, string content);
+tree init_tree(tree tree0, string state, tree* left, tree* right, string content);
 tree better(tree tree0);
-tree find(string str,tree tree0);
+tree find(string str, tree tree0);
 tree trans_to_tree(string str);
 int out_by_tree(tree tree0);
 string search(string s);
@@ -54,6 +54,9 @@ int compare(tree tree1, tree tree2)
 }
 tree better(tree tree0)
 {
+	int i = 0;
+	int j = 0;
+	int k = 0;
 	tree tree_now;
 	tree join;
 	tree select;
@@ -61,12 +64,54 @@ tree better(tree tree0)
 	tree_now = tree0;
 	join = tree0;
 	select = tree0;
+	char ** a;
+	char * content;
+	char * token;
+	char ** b;
+	string tempstr;
+
 	temp = init_tree(temp, NULL, NULL, NULL, NULL);
 	join = find("JOIN", join);
 	select = find("SELECT", select);
 	if (compare(tree_now, select)) tree_now = *tree_now.left;
 	else tree_now.left = select.left;
-		if (select.left->state != "JOIN" )
+	if (select.left->state != "JOIN")  tree_now = *tree_now.left;
+	strcpy(content,select.content.c_str());
+	token = strtok(content, "&");
+	while (token != NULL) 
+	{
+		a[i] = token;
+		token = strtok(NULL, " ");
+		i += 1;
+	}
+	for (j = 0; j < i; j++)
+	{
+		token = strtok(a[j], "=");
+		while (token != NULL)
+		{
+			b[k] = token;
+			token = strtok(NULL, " ");
+			k += 1;
+		}
+		tempstr = b[0];
+		if (join.left->content == tempstr)
+		{
+			temp = *join.left;
+			temp.state = "SELECT";
+			temp.content = a[j];
+			temp.left = &init_tree(*temp.left,NULL, NULL, NULL, NULL);
+			temp.left->content = tempstr;
+
+		}
+		if (join.right->content == tempstr)
+		{
+			temp = *join.right;
+			temp.state = "SELECT";
+			temp.content = a[j];
+			temp.left = &init_tree(*temp.left, NULL, NULL, NULL, NULL);
+			temp.left->content = tempstr;
+		}
+	}
 	return tree_now;
 }
 string search(string s)
@@ -133,7 +178,7 @@ tree trans_to_tree(string str)
 		else if (!(strcmp(split[i], "[") && strcmp(split[i], "]") && strcmp(split[i], ")"))) continue;
 		else if (!strcmp(split[i], "("))
 		{
-			
+
 			str_tree.left = &(init_tree(lasttree, NULL, NULL, NULL, NULL));
 			str_tree = *str_tree.left;
 		}
@@ -141,7 +186,7 @@ tree trans_to_tree(string str)
 		{
 			str_tree.state.append(ss);
 			str_tree.left = &(init_tree(lasttree, NULL, NULL, NULL, NULL));
-			str_tree.left->content.append(split[i-1]);
+			str_tree.left->content.append(split[i - 1]);
 			str_tree.right = &(init_tree(nexttree, NULL, NULL, NULL, NULL));
 			str_tree.right->content.append(split[i + 1]);
 		}
@@ -153,7 +198,7 @@ tree trans_to_tree(string str)
 	}
 	return result;
 }
-tree find(string str,tree tree0)
+tree find(string str, tree tree0)
 {
 	while (tree0.state == str)
 		tree0 = *tree0.left;
