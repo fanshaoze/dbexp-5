@@ -38,5 +38,11 @@
     <ClCompile Include="dbexp-5.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="mathods.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="treemathod.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
