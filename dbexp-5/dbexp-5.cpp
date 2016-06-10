@@ -13,10 +13,10 @@ typedef struct tree
 }tree;
 
 tree init_tree(tree tree0,string state, tree* left, tree* right, string content);
-tree better(string str);
+tree better(tree tree0);
 tree find(string str,tree tree0);
 tree trans_to_tree(string str);
-int out_by_tree(string str);
+int out_by_tree(tree tree0);
 string search(string s);
 const char key_words[4][20][20] =
 { {"ESSN", "ADDRESS", "SALARY", "SUPERSSN", "ENAME", "DNO"},
@@ -45,9 +45,28 @@ tree init_tree(tree tree0, string state, tree* left, tree* right, string content
 	tree0.content = content;
 	return tree0;
 }
-tree better(string str)
+int compare(tree tree1, tree tree2)
+{
+	if (tree1.content == tree2.content && tree1.left == tree2.left &&
+		tree1.right == tree2.right&& tree1.state == tree2.state)
+		return 1;
+	else return 0;
+}
+tree better(tree tree0)
 {
 	tree tree_now;
+	tree join;
+	tree select;
+	tree temp;
+	tree_now = tree0;
+	join = tree0;
+	select = tree0;
+	temp = init_tree(temp, NULL, NULL, NULL, NULL);
+	join = find("JOIN", join);
+	select = find("SELECT", select);
+	if (compare(tree_now, select)) tree_now = *tree_now.left;
+	else tree_now.left = select.left;
+		if (select.left->state != "JOIN" )
 	return tree_now;
 }
 string search(string s)
