@@ -11,6 +11,8 @@
 #include <tchar.h>
 #include <iostream>
 #include <string>
+#include "mathods.h"
+#include "treemathod.h"
 using namespace std;
 
 
