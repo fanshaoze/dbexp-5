@@ -12,8 +12,13 @@ using namespace std;
 
 #include "stdafx.h"
 using namespace std;
-
-int split(char ** a, char * str, char * v);
+typedef struct rel
+{
+	int length;
+	char result[100][20];
+}rel;
+int ceshi();
+rel split(char str[], char * v);
 tree better(tree tree0);
 string search(string s);
 tree trans_to_tree(string str);

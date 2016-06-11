@@ -10,19 +10,25 @@ const char key_words[4][20][20] =
 { "PNAME", "PNO", "PLOCATION", "DNO" },
 { "HOURS", "P.ESSN", "PNO" } };
 //struct tree; 
-
-int split(char ** a,char * str, char * v)
+rel split(char str[], char * v)
 {
+	rel split_result;
 	int i = 0;
-	char * token;
+	char * token = NULL;
+	cout << str;
+	cout << v;
+	cout << endl;
 	token = strtok(str, v);
+	cout << token << endl;
 	while (token != NULL)
 	{
-		a[i] = token;
+		strcpy(split_result.result[i], token);
+		cout << split_result.result[i] << endl;
 		token = strtok(NULL, " ");
 		i += 1;
 	}
-	return i;
+	split_result.length = i;
+	return split_result;
 }
 tree better(tree tree0)
 {
@@ -36,9 +42,10 @@ tree better(tree tree0)
 	tree_now = tree0;
 	join = tree0;
 	select = tree0;
-	char ** a = new char *;
+	rel a;
+	rel b;
 	char * content = NULL;
-	char ** b = new char *;
+	
 	string tempstr;
 
 	temp = init_tree(temp, NULL, NULL, NULL, NULL);
@@ -48,16 +55,16 @@ tree better(tree tree0)
 	else tree_now.left = select.left;
 	if (select.left->state != "JOIN")  tree_now = *tree_now.left;
 	strcpy(content, select.content.c_str());
-	n = split(a,content, "&");
+	a = split(content, "&");
 	for (j = 0; j < n; j++)
 	{
-		split(b,a[j], "=");
-		tempstr = b[0];
+		b = split(a.result[j], "=");
+		tempstr = b.result[0];
 		if (join.left->content == tempstr)
 		{
 			temp = *join.left;
 			temp.state = "SELECT";
-			temp.content = a[j];
+			temp.content = a.result[j];
 			temp.left = &init_tree(*temp.left, NULL, NULL, NULL, NULL);
 			temp.left->content = tempstr;
 
@@ -66,7 +73,7 @@ tree better(tree tree0)
 		{
 			temp = *join.right;
 			temp.state = "SELECT";
-			temp.content = a[j];
+			temp.content = a.result[j];
 			temp.left = &init_tree(*temp.left, NULL, NULL, NULL, NULL);
 			temp.left->content = tempstr;
 		}
@@ -96,43 +103,43 @@ tree trans_to_tree(string str)
 {
 	int i = 0;
 	int n = 0;
-	char **spl = new char *;
+	rel spl;
 	int strlen = str.length();
 	int t = 0;
 	int flag = 1;
-	n = split(spl, (char *)str.c_str(), " ");
+	spl = split((char *)str.c_str(), " ");
 	tree str_tree;
 	tree result;
 	init_tree(str_tree, NULL, NULL, NULL, NULL);
 	result = str_tree;
 	for (i = 0; i < n; i++)
 	{
-		string ss(spl[i]);
+		string ss(spl.result[i]);
 		tree lasttree;
 		tree nexttree;
-		if (!(strcmp(spl[i], "PROJECTION") && strcmp(spl[i], "SELECT") && strcmp(spl[i], "AVG")))
+		if (!(strcmp(spl.result[i], "PROJECTION") && strcmp(spl.result[i], "SELECT") && strcmp(spl.result[i], "AVG")))
 		{
 			str_tree.state.append(ss);
 		}
-		else if (!(strcmp(spl[i], "[") && strcmp(spl[i], "]") && strcmp(spl[i], ")"))) continue;
-		else if (!strcmp(spl[i], "("))
+		else if (!(strcmp(spl.result[i], "[") && strcmp(spl.result[i], "]") && strcmp(spl.result[i], ")"))) continue;
+		else if (!strcmp(spl.result[i], "("))
 		{
 
 			str_tree.left = &(init_tree(lasttree, NULL, NULL, NULL, NULL));
 			str_tree = *str_tree.left;
 		}
-		else if (!strcmp(spl[i], "JOIN"))
+		else if (!strcmp(spl.result[i], "JOIN"))
 		{
 			str_tree.state.append(ss);
 			str_tree.left = &(init_tree(lasttree, NULL, NULL, NULL, NULL));
-			str_tree.left->content.append(spl[i - 1]);
+			str_tree.left->content.append(spl.result[i - 1]);
 			str_tree.right = &(init_tree(nexttree, NULL, NULL, NULL, NULL));
-			str_tree.right->content.append(spl[i + 1]);
+			str_tree.right->content.append(spl.result[i + 1]);
 		}
 		else
 		{
-			if (!strcmp(spl[i], "JOIN")) continue;
-			str_tree.content = str_tree.content + spl[i];
+			if (!strcmp(spl.result[i], "JOIN")) continue;
+			str_tree.content = str_tree.content + spl.result[i];
 		}
 	}
 	return result;
@@ -167,5 +174,19 @@ int out_by_tree(tree tree0)
 	}
 	return 0;
 }
-
+int ceshi()
+{
+	char str[] = "ab,cd,ef";
+	char *ptr;
+	printf("before strtok:  str=%s\n", str);
+	printf("begin:\n");
+	ptr = strtok(str, ",");
+	while (ptr != NULL) {
+		printf("str=%s\n", str);
+		printf("ptr=%s\n", ptr);
+		ptr = strtok(NULL, ",");
+	}
+	system("pause");
+	return 0;
+}
 
