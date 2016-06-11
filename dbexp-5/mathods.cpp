@@ -109,80 +109,80 @@ tree trans_to_tree(string str)
 	int t = 0;
 	int flag = 1;
 	spl = split((char *)str.c_str(), " ");
-	for (i = 0; i < spl.length; i++)
-	{
-		cout << spl.result[i] << endl;
-	}
-	tree str_tree;
-	tree result;
-	str_tree = init_tree("", NULL, NULL, "");
+	tree * str_tree;
+	tree * result = new tree;
+	str_tree = &init_tree("", NULL, NULL, "");
 	result = str_tree;
 	for (i = 0; i < spl.length; i++)
 	{
 		string ss(spl.result[i]);
-		cout << ss;
+		//cout << ss;
 		if (!(strcmp(spl.result[i], "PROJECTION") && strcmp(spl.result[i], "SELECT") &&
 			strcmp(spl.result[i], "AVG")))
 		{
-			cout << spl.result[i];
-			str_tree.state.append(ss);
+			//cout << spl.result[i];
+			str_tree->state.append(ss);
 		}
 		else if (!(strcmp(spl.result[i], "[") && strcmp(spl.result[i], "]") &&
 			strcmp(spl.result[i], ")")))
 		{
-			cout << spl.result[i];
+			//cout << spl.result[i];
 			continue;
 		}
 		else if (!strcmp(spl.result[i], "("))
 		{
-			cout << spl.result[i] << endl;
-			str_tree.left = &(init_tree("", NULL, NULL, ""));
-			str_tree = *str_tree.left;
+			//cout << spl.result[i] << endl;
+			str_tree->left = &(init_tree("", NULL, NULL, ""));
+			str_tree = str_tree->left;
 		}
 		else if (!strcmp(spl.result[i], "JOIN"))
 		{
-			cout << spl.result[i] << endl;
-			str_tree.state.append(ss);
-			str_tree.left = &(init_tree("", NULL, NULL, ""));
-			str_tree.left->content.append(spl.result[i - 1]);
-			str_tree.right = &(init_tree("", NULL, NULL, ""));
-			str_tree.right->content.append(spl.result[i + 1]);
+			//cout << spl.result[i] << endl;
+			str_tree->state.append(ss);
+			str_tree->left = &(init_tree("", NULL, NULL, ""));
+			str_tree->left->content.append(spl.result[i - 1]);
+			str_tree->right = &(init_tree("", NULL, NULL, ""));
+			str_tree->right->content.append(spl.result[i + 1]);
 		}
 		else
 		{
-			if (!strcmp(spl.result[i + 1], "JOIN")) continue;
-			str_tree.content = str_tree.content + spl.result[i];
-			cout << str_tree.content << endl;
+			if (!(strcmp(spl.result[i + 1], "JOIN")&&strcmp(spl.result[i - 1], "JOIN")))
+				continue;
+			str_tree->content = str_tree->content + spl.result[i];
+			//cout << str_tree.content << endl;
 		}
 	}
-	return result;
+	return *result;
 }
 
-int out_by_tree(tree tree0)
+int out_by_tree(tree * tree0)
 {
 	int i = 0;
-	int t = 0;
+	int t = 1;
 	tree * tree1;
-	tree1 = &tree0;
-	tree **treelist = NULL;
-	while ((tree1 != NULL) || (treelist != NULL))
+	tree1 = tree0;
+	tree ** treelist = new tree *;
+	while ((tree1 != NULL) || (t != 0))
 	{
 		while (tree1 != NULL)
 		{
 			if (tree1->state != "")
-				cout << tree1->state << " " << endl;
-			if (tree1->content != "")
-				cout << tree1->content;
+				cout << tree1->state << " ";
+			//if (tree1->content != "")
+				cout << tree1->content << endl;
 			treelist[i] = tree1;
-			i += 0;
+			i += 1;
 			tree1 = tree1->left;
 		}
-		t = sizeof(tree1) / sizeof(tree);
+		//cout << i;
+		t = i;
 		if (t != 0)
 		{
-			treelist[t - 1] = NULL;
-			tree1 = treelist[t - 1];
+			t -= 1;
+			tree1 = treelist[t];
 			tree1 = tree1->right;
+			treelist[t] = NULL;
+			i = t;
 		}
 	}
 	return 0;
