@@ -66,7 +66,7 @@ tree * better(tree * tree0)
 			temp->state = "SELECT";
 			temp->content = a.result[j];
 			temp->left = init_tree("", NULL, NULL, "");
-			temp->left->content = a.result[j];
+			temp->left->content = tempstr;
 
 		}
 		if (join->right->content == tempstr)
@@ -83,7 +83,6 @@ tree * better(tree * tree0)
 string search(string s)
 {
 	int i;
-	int k;
 	for (i = 0; i < 18; i++)
 	{
 		if (key_words[i] == s)
