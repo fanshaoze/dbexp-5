@@ -48,7 +48,7 @@ tree better(tree tree0)
 	
 	string tempstr;
 
-	temp = init_tree(temp, NULL, NULL, NULL, NULL);
+	temp = init_tree("", NULL, NULL, "");
 	join = find("JOIN", join);
 	select = find("SELECT", select);
 	if (compare(tree_now, select)) tree_now = *tree_now.left;
@@ -65,7 +65,7 @@ tree better(tree tree0)
 			temp = *join.left;
 			temp.state = "SELECT";
 			temp.content = a.result[j];
-			temp.left = &init_tree(*temp.left, NULL, NULL, NULL, NULL);
+			temp.left = &init_tree("", NULL, NULL, "");
 			temp.left->content = tempstr;
 
 		}
@@ -74,7 +74,7 @@ tree better(tree tree0)
 			temp = *join.right;
 			temp.state = "SELECT";
 			temp.content = a.result[j];
-			temp.left = &init_tree(*temp.left, NULL, NULL, NULL, NULL);
+			temp.left = &init_tree("", NULL, NULL, "");
 			temp.left->content = tempstr;
 		}
 	}
@@ -82,11 +82,12 @@ tree better(tree tree0)
 }
 string search(string s)
 {
+	cout << s;
 	int i;
 	int k;
 	for (i = 0; i < 4; i++)
 	{
-		for (k = 0; k < sizeof(key_words[i]); i++)
+		for (k = 0; k < sizeof(key_words[i]); k++)
 		{
 			if (key_words[i][k] == s)
 			{
@@ -108,38 +109,50 @@ tree trans_to_tree(string str)
 	int t = 0;
 	int flag = 1;
 	spl = split((char *)str.c_str(), " ");
+	for (i = 0; i < spl.length; i++)
+	{
+		cout << spl.result[i] << endl;
+	}
 	tree str_tree;
 	tree result;
-	init_tree(str_tree, NULL, NULL, NULL, NULL);
+	str_tree = init_tree("", NULL, NULL, "");
 	result = str_tree;
-	for (i = 0; i < n; i++)
+	for (i = 0; i < spl.length; i++)
 	{
 		string ss(spl.result[i]);
-		tree lasttree;
-		tree nexttree;
-		if (!(strcmp(spl.result[i], "PROJECTION") && strcmp(spl.result[i], "SELECT") && strcmp(spl.result[i], "AVG")))
+		cout << ss;
+		if (!(strcmp(spl.result[i], "PROJECTION") && strcmp(spl.result[i], "SELECT") &&
+			strcmp(spl.result[i], "AVG")))
 		{
+			cout << spl.result[i];
 			str_tree.state.append(ss);
 		}
-		else if (!(strcmp(spl.result[i], "[") && strcmp(spl.result[i], "]") && strcmp(spl.result[i], ")"))) continue;
+		else if (!(strcmp(spl.result[i], "[") && strcmp(spl.result[i], "]") &&
+			strcmp(spl.result[i], ")")))
+		{
+			cout << spl.result[i];
+			continue;
+		}
 		else if (!strcmp(spl.result[i], "("))
 		{
-
-			str_tree.left = &(init_tree(lasttree, NULL, NULL, NULL, NULL));
+			cout << spl.result[i] << endl;
+			str_tree.left = &(init_tree("", NULL, NULL, ""));
 			str_tree = *str_tree.left;
 		}
 		else if (!strcmp(spl.result[i], "JOIN"))
 		{
+			cout << spl.result[i] << endl;
 			str_tree.state.append(ss);
-			str_tree.left = &(init_tree(lasttree, NULL, NULL, NULL, NULL));
+			str_tree.left = &(init_tree("", NULL, NULL, ""));
 			str_tree.left->content.append(spl.result[i - 1]);
-			str_tree.right = &(init_tree(nexttree, NULL, NULL, NULL, NULL));
+			str_tree.right = &(init_tree("", NULL, NULL, ""));
 			str_tree.right->content.append(spl.result[i + 1]);
 		}
 		else
 		{
-			if (!strcmp(spl.result[i], "JOIN")) continue;
+			if (!strcmp(spl.result[i + 1], "JOIN")) continue;
 			str_tree.content = str_tree.content + spl.result[i];
+			cout << str_tree.content << endl;
 		}
 	}
 	return result;
