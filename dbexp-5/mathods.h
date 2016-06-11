@@ -19,7 +19,7 @@ typedef struct rel
 }rel;
 int ceshi();
 rel split(char str[], char * v);
-tree better(tree tree0);
+tree * better(tree * tree0);
 string search(string s);
-tree trans_to_tree(string str);
+tree * trans_to_tree(string str);
 int out_by_tree(tree * tree0);

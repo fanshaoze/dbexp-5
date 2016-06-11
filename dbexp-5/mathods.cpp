@@ -4,103 +4,99 @@
 
 // dbexp-5.cpp : 定义控制台应用程序的入口点。
 
-const char key_words[4][20][20] =
-{ { "ESSN", "ADDRESS", "SALARY", "SUPERSSN", "ENAME", "DNO" },
-{ "DNO", "DNAME", "DNEMBER", "MGRSSN", "MGRSTARTDATE" },
-{ "PNAME", "PNO", "PLOCATION", "DNO" },
-{ "HOURS", "P.ESSN", "PNO" } };
+const char key_words[18][20] =
+{ "ESSN", "ADDRESS", "SALARY", "SUPERSSN", "ENAME", "DNO" ,
+ "DNO", "DNAME", "DNEMBER", "MGRSSN", "MGRSTARTDATE" ,
+ "PNAME", "PNO", "PLOCATION", "DNO",
+ "HOURS", "P.ESSN", "PNO" };
 //struct tree; 
 rel split(char str[], char * v)
 {
 	rel split_result;
 	int i = 0;
 	char * token = NULL;
-	cout << str;
-	cout << v;
-	cout << endl;
+	//cout << str;
+	//cout << v;
+	//cout << endl;
 	token = strtok(str, v);
-	cout << token << endl;
+	//cout << token << endl;
 	while (token != NULL)
 	{
 		strcpy(split_result.result[i], token);
-		cout << split_result.result[i] << endl;
+		//cout << split_result.result[i] << endl;
 		token = strtok(NULL, " ");
 		i += 1;
 	}
 	split_result.length = i;
 	return split_result;
 }
-tree better(tree tree0)
+tree * better(tree * tree0)
 {
 	int n = 0;
 	int i = 0;
 	int j = 0;
-	tree tree_now;
-	tree join;
-	tree select;
-	tree temp;
+	tree * tree_now = NULL;
+	tree *join = NULL;
+	tree * select = NULL;
+	tree * temp = NULL;
 	tree_now = tree0;
 	join = tree0;
 	select = tree0;
 	rel a;
 	rel b;
-	char * content = NULL;
+	char content [100];
 	
 	string tempstr;
 
 	temp = init_tree("", NULL, NULL, "");
 	join = find("JOIN", join);
 	select = find("SELECT", select);
-	if (compare(tree_now, select)) tree_now = *tree_now.left;
-	else tree_now.left = select.left;
-	if (select.left->state != "JOIN")  tree_now = *tree_now.left;
-	strcpy(content, select.content.c_str());
+	if (compare(*tree_now, *select)) tree_now = tree_now->left;
+	else tree_now->left = select->left;
+	if (select->left->state != "JOIN")  tree_now = tree_now->left;
+	strcpy(content, select->content.c_str());
 	a = split(content, "&");
-	for (j = 0; j < n; j++)
+	for (j = 0; j < a.length; j++)
 	{
 		b = split(a.result[j], "=");
-		tempstr = b.result[0];
-		if (join.left->content == tempstr)
+		tempstr = search(b.result[0]);
+		if (join->left->content == tempstr)
 		{
-			temp = *join.left;
-			temp.state = "SELECT";
-			temp.content = a.result[j];
-			temp.left = &init_tree("", NULL, NULL, "");
-			temp.left->content = tempstr;
+			temp = join->left;
+			temp->state = "SELECT";
+			temp->content = a.result[j];
+			temp->left = init_tree("", NULL, NULL, "");
+			temp->left->content = a.result[j];
 
 		}
-		if (join.right->content == tempstr)
+		if (join->right->content == tempstr)
 		{
-			temp = *join.right;
-			temp.state = "SELECT";
-			temp.content = a.result[j];
-			temp.left = &init_tree("", NULL, NULL, "");
-			temp.left->content = tempstr;
+			temp = join->right;
+			temp->state = "SELECT";
+			temp->content = a.result[j];
+			temp->left = init_tree("", NULL, NULL, "");
+			temp->left->content = tempstr;
 		}
 	}
 	return tree_now;
 }
 string search(string s)
 {
-	cout << s;
 	int i;
 	int k;
-	for (i = 0; i < 4; i++)
+	for (i = 0; i < 18; i++)
 	{
-		for (k = 0; k < sizeof(key_words[i]); k++)
+		if (key_words[i] == s)
 		{
-			if (key_words[i][k] == s)
-			{
-				if (i == 0) return "EMPLOYEE";
-				else if (i == 1) return "DEPARTMENT";
-				else if (i == 2) return "PROJECT";
-				else return "WORKS_ON";
-			}
+			if (0<=i && i<=5) return "EMPLOYEE";
+			else if (6 <= i && i <= 10) return "DEPARTMENT";
+			else if (11 <= i && i <= 14) return "PROJECT";
+			else return "WORKS_ON";
 		}
 	}
 	return "NOTHING";
 }
-tree trans_to_tree(string str)
+tree * trans_to_tree(string str)
 {
 	int i = 0;
 	int n = 0;
@@ -111,7 +107,7 @@ tree trans_to_tree(string str)
 	spl = split((char *)str.c_str(), " ");
 	tree * str_tree;
 	tree * result = new tree;
-	str_tree = &init_tree("", NULL, NULL, "");
+	str_tree = init_tree("", NULL, NULL, "");
 	result = str_tree;
 	for (i = 0; i < spl.length; i++)
 	{
@@ -132,16 +128,16 @@ tree trans_to_tree(string str)
 		else if (!strcmp(spl.result[i], "("))
 		{
 			//cout << spl.result[i] << endl;
-			str_tree->left = &(init_tree("", NULL, NULL, ""));
+			str_tree->left = init_tree("", NULL, NULL, "");
 			str_tree = str_tree->left;
 		}
 		else if (!strcmp(spl.result[i], "JOIN"))
 		{
 			//cout << spl.result[i] << endl;
 			str_tree->state.append(ss);
-			str_tree->left = &(init_tree("", NULL, NULL, ""));
+			str_tree->left = init_tree("", NULL, NULL, "");
 			str_tree->left->content.append(spl.result[i - 1]);
-			str_tree->right = &(init_tree("", NULL, NULL, ""));
+			str_tree->right = init_tree("", NULL, NULL, "");
 			str_tree->right->content.append(spl.result[i + 1]);
 		}
 		else
@@ -152,7 +148,7 @@ tree trans_to_tree(string str)
 			//cout << str_tree.content << endl;
 		}
 	}
-	return *result;
+	return result;
 }
 
 int out_by_tree(tree * tree0)
@@ -181,7 +177,6 @@ int out_by_tree(tree * tree0)
 			t -= 1;
 			tree1 = treelist[t];
 			tree1 = tree1->right;
-			treelist[t] = NULL;
 			i = t;
 		}
 	}

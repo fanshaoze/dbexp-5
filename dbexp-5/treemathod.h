@@ -10,10 +10,10 @@ struct tree;
 typedef struct tree
 {
 	string state;
-	tree* left;
-	tree* right;
+	tree* left  = NULL;
+	tree* right  = NULL;
 	string content;
 }tree;
-tree init_tree(string state, tree* left, tree* right, string content);
+tree * init_tree(string state, tree* left, tree* right, string content);
 int compare(tree tree1, tree tree2);
-tree find(string str, tree tree0);
+tree * find(string str, tree * tree0);

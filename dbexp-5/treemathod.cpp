@@ -1,15 +1,16 @@
 #pragma once
 #include "stdafx.h"
 #include "treemathod.h"
-tree init_tree(string state, tree* left, tree* right, string content)
+tree * init_tree(string state, tree* left, tree* right, string content)
 {
-	tree tree0;
-	tree0.left = new tree;
-	tree0.right = new tree;
-	tree0.state = state;
-	tree0.left = left;
-	tree0.right = right;
-	tree0.content = content;
+	tree * tree0 = NULL;
+	tree0 = new tree;
+	tree0->left = new tree;
+	tree0->right = new tree;
+	tree0->state = state;
+	tree0->left = left;
+	tree0->right = right;
+	tree0->content = content;
 	return tree0;
 }
 int compare(tree tree1, tree tree2)
@@ -19,9 +20,9 @@ int compare(tree tree1, tree tree2)
 		return 1;
 	else return 0;
 }
-tree find(string str, tree tree0)
+tree * find(string str, tree * tree0)
 {
-	while (tree0.state == str)
-		tree0 = *tree0.left;
+	while (tree0->state != str)
+		tree0 = tree0->left;
 	return tree0;
 }
